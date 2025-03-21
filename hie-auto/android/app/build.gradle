@@ -1,0 +1,42 @@
+plugins {
+    id "com.android.application"
+    id "kotlin-android"
+    id "dev.flutter.flutter-gradle-plugin" // Flutter plugin should be after Android and Kotlin plugins
+}
+
+android {
+    namespace "com.haiauto.app"
+    compileSdk = flutter.compileSdkVersion
+    ndkVersion = flutter.ndkVersion
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+
+    kotlinOptions {
+        jvmTarget = "17"
+    }
+
+    defaultConfig {
+        applicationId = "com.haiauto.app" // Ensure this is your actual package name
+        minSdkVersion = 23 // Required by firebase_auth
+        targetSdkVersion = 33 // Update to the latest as needed
+        versionCode flutter.versionCode
+        versionName flutter.versionName
+        manifestPlaceholders = [
+            'MAPBOX_ACCESS_TOKEN': "pk.eyJ1IjoidmFydW5tZW5vbiIsImEiOiJjbTM3MjNmZWMwNGJlMm1xdXg1OTk1NHlnIn0.5yLCFGI6Mr3tMzcjJZgYlg"
+        ]
+    }
+    
+    buildTypes {
+        release {
+            // Use debug signing config for now (replace with your release key as needed)
+            signingConfig = signingConfigs.debug
+        }
+    }
+}
+
+flutter {
+    source = "../.."
+}
