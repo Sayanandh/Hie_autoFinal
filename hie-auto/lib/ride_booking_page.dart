@@ -19,6 +19,11 @@ class _RideBookingPageState extends State<RideBookingPage> {
   final MapController _mapController = MapController();
   String _selectedVehicleType = 'Auto';
 
+  String _getMapStyle(BuildContext context) {
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+    return isDarkMode ? Secrets.darkMapStyle : Secrets.lightMapStyle;
+  }
+
   final List<Map<String, dynamic>> _vehicleTypes = [
     {
       'type': 'Auto',
@@ -122,6 +127,7 @@ class _RideBookingPageState extends State<RideBookingPage> {
     }
 
     final routePoints = _getRoutePoints();
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
       body: Stack(
@@ -137,17 +143,17 @@ class _RideBookingPageState extends State<RideBookingPage> {
             children: [
               TileLayer(
                 urlTemplate:
-                    'https://api.mapbox.com/styles/v1/${Secrets.mapboxStyleId}/tiles/256/{z}/{x}/{y}@2x?access_token=${Secrets.mapboxAccessToken}',
-                additionalOptions: const {
+                    'https://api.mapbox.com/styles/v1/{id}/tiles/256/{z}/{x}/{y}@2x?access_token={accessToken}',
+                additionalOptions: {
                   'accessToken': Secrets.mapboxAccessToken,
-                  'id': 'mapbox.mapbox-streets-v8',
+                  'id': _getMapStyle(context),
                 },
               ),
               PolylineLayer(
                 polylines: [
                   Polyline(
                     points: routePoints,
-                    color: Colors.blue,
+                    color: isDarkMode ? Colors.lightBlueAccent : Colors.blue,
                     strokeWidth: 4,
                   ),
                 ],
@@ -171,7 +177,8 @@ class _RideBookingPageState extends State<RideBookingPage> {
                             color: Colors.green,
                             shape: BoxShape.circle,
                             border: Border.all(
-                              color: Colors.white,
+                              color:
+                                  isDarkMode ? Colors.grey[800]! : Colors.white,
                               width: 2,
                             ),
                           ),
@@ -196,7 +203,8 @@ class _RideBookingPageState extends State<RideBookingPage> {
                             color: Colors.red,
                             shape: BoxShape.circle,
                             border: Border.all(
-                              color: Colors.white,
+                              color:
+                                  isDarkMode ? Colors.grey[800]! : Colors.white,
                               width: 2,
                             ),
                           ),
