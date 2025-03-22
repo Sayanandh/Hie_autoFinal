@@ -17,7 +17,7 @@ class _PaymentPageState extends State<PaymentPage> {
   String _selectedPaymentMethod = 'upi';
   bool _isProcessing = false;
   final TextEditingController _upiController = TextEditingController();
-  
+
   final List<Map<String, dynamic>> _paymentMethods = [
     {
       'id': 'upi',
@@ -39,253 +39,122 @@ class _PaymentPageState extends State<PaymentPage> {
     },
   ];
 
-  Widget _buildPaymentMethodCard(Map<String, dynamic> method) {
-    final isSelected = _selectedPaymentMethod == method['id'];
-    return GestureDetector(
-      onTap: () => setState(() => _selectedPaymentMethod = method['id']),
-      child: Container(
-        margin: const EdgeInsets.only(bottom: 12),
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: isSelected 
-              ? Theme.of(context).primaryColor.withOpacity(0.1)
-              : Theme.of(context).cardColor,
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(
-            color: isSelected 
-                ? Theme.of(context).primaryColor
-                : Theme.of(context).dividerColor,
-            width: isSelected ? 2 : 1,
-          ),
+  @override
+  Widget build(BuildContext context) {
+    final price = widget.paymentData['price'] as String;
+    final source = widget.paymentData['source'] as String;
+    final destination = widget.paymentData['destination'] as String;
+    final distance = widget.paymentData['distance'] as String;
+    final duration = widget.paymentData['duration'] as String;
+    final driver = widget.paymentData['driver'] as Map<String, dynamic>;
+
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Payment'),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () => Navigator.pop(context),
         ),
-        child: Row(
+      ),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Container(
-              padding: const EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                color: isSelected
-                    ? Theme.of(context).primaryColor.withOpacity(0.1)
-                    : Theme.of(context).cardColor,
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Icon(
-                method['icon'],
-                size: 24,
-                color: isSelected
-                    ? Theme.of(context).primaryColor
-                    : Theme.of(context).iconTheme.color,
+            Card(
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Ride Details',
+                      style: Theme.of(context).textTheme.titleLarge,
+                    ),
+                    const SizedBox(height: 16),
+                    _buildDetailRow('From', source),
+                    _buildDetailRow('To', destination),
+                    _buildDetailRow('Distance', distance),
+                    _buildDetailRow('Duration', duration),
+                    _buildDetailRow('Price', price),
+                  ],
+                ),
               ),
             ),
-            const SizedBox(width: 16),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    method['name'],
-                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  Text(
-                    method['description'],
-                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: Theme.of(context).textTheme.bodySmall?.color?.withOpacity(0.7),
-                    ),
-                  ),
-                ],
+            const SizedBox(height: 24),
+            Text(
+              'Select Payment Method',
+              style: Theme.of(context).textTheme.titleLarge,
+            ),
+            const SizedBox(height: 16),
+            ..._paymentMethods.map((method) => _buildPaymentMethodCard(method)),
+            const SizedBox(height: 24),
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed:
+                    _isProcessing ? null : () => _processPayment(context),
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Text(_isProcessing ? 'Processing...' : 'Pay $price'),
+                ),
               ),
             ),
-            if (isSelected)
-              Icon(
-                Icons.check_circle,
-                color: Theme.of(context).primaryColor,
-              ),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildUPIInput() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const SizedBox(height: 16),
-        Text(
-          'Enter UPI ID',
-          style: Theme.of(context).textTheme.titleSmall,
-        ),
-        const SizedBox(height: 8),
-        TextField(
-          controller: _upiController,
-          decoration: InputDecoration(
-            hintText: 'username@upi',
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-            ),
-            prefixIcon: const Icon(Icons.account_balance),
+  Widget _buildDetailRow(String label, String value) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            label,
+            style: const TextStyle(fontWeight: FontWeight.bold),
           ),
-        ),
-      ],
+          Text(value),
+        ],
+      ),
     );
   }
 
-  Widget _buildCardInput() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const SizedBox(height: 16),
-        Text(
-          'This is a demo app',
-          style: Theme.of(context).textTheme.titleSmall,
-        ),
-        const SizedBox(height: 8),
-        Text(
-          'In a real app, we would integrate with a payment gateway like Stripe or Razorpay here.',
-          style: Theme.of(context).textTheme.bodySmall,
-        ),
-      ],
+  Widget _buildPaymentMethodCard(Map<String, dynamic> method) {
+    final isSelected = _selectedPaymentMethod == method['id'];
+    return Card(
+      margin: const EdgeInsets.only(bottom: 12),
+      child: ListTile(
+        leading: Icon(method['icon'] as IconData),
+        title: Text(method['name'] as String),
+        subtitle: Text(method['description'] as String),
+        trailing: isSelected ? const Icon(Icons.check_circle) : null,
+        selected: isSelected,
+        onTap: () => setState(() => _selectedPaymentMethod = method['id']),
+      ),
     );
   }
 
-  Future<void> _processPayment() async {
+  void _processPayment(BuildContext context) {
     setState(() => _isProcessing = true);
 
     // Simulate payment processing
-    await Future.delayed(const Duration(seconds: 2));
-
-    if (!mounted) return;
-
-    // Show success dialog
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (context) => AlertDialog(
-        title: const Text('Payment Successful'),
-        content: const Text('Your ride has been booked successfully!'),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.of(context).pop(); // Close dialog
-              Navigator.of(context).popUntil((route) => route.isFirst); // Go to home
-            },
-            child: const Text('OK'),
-          ),
-        ],
-      ),
-    );
-
-    setState(() => _isProcessing = false);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final vehicle = widget.paymentData['vehicle'];
-    final price = vehicle['finalPrice'];
-
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Payment'),
-        elevation: 0,
-      ),
-      body: Stack(
-        children: [
-          ListView(
-            padding: const EdgeInsets.all(16),
-            children: [
-              // Price Card
-              Container(
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: Theme.of(context).primaryColor.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Column(
-                  children: [
-                    Text(
-                      '₹$price',
-                      style: Theme.of(context).textTheme.headlineLarge?.copyWith(
-                        fontWeight: FontWeight.bold,
-                        color: Theme.of(context).primaryColor,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      'Total Amount',
-                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        color: Theme.of(context).primaryColor,
-                      ),
-                    ),
-                  ],
-                ),
-              ).animate().slideY(
-                begin: -0.2,
-                duration: 600.ms,
-                curve: Curves.easeOut,
-              ),
-
-              const SizedBox(height: 24),
-
-              // Payment Methods
-              Text(
-                'Select Payment Method',
-                style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const SizedBox(height: 16),
-              
-              ..._paymentMethods.map(_buildPaymentMethodCard),
-
-              // Payment Method Specific Input
-              if (_selectedPaymentMethod == 'upi')
-                _buildUPIInput()
-              else if (_selectedPaymentMethod == 'card')
-                _buildCardInput(),
-
-              const SizedBox(height: 100), // Space for bottom button
-            ],
-          ),
-
-          // Bottom Payment Button
-          Positioned(
-            left: 16,
-            right: 16,
-            bottom: 16,
-            child: SafeArea(
-              child: ElevatedButton(
-                onPressed: _isProcessing ? null : _processPayment,
-                style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                ),
-                child: _isProcessing
-                    ? const SizedBox(
-                        height: 20,
-                        width: 20,
-                        child: CircularProgressIndicator(
-                          strokeWidth: 2,
-                          valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                        ),
-                      )
-                    : Text(
-                        _selectedPaymentMethod == 'cash'
-                            ? 'Confirm Booking'
-                            : 'Pay ₹$price',
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
+    Future.delayed(const Duration(seconds: 2), () {
+      setState(() => _isProcessing = false);
+      Navigator.pushNamedAndRemoveUntil(
+        context,
+        '/home',
+        (route) => false,
+      );
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Payment successful!'),
+          backgroundColor: Colors.green,
+        ),
+      );
+    });
   }
 
   @override

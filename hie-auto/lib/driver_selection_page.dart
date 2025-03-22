@@ -53,7 +53,6 @@ class DriverSelectionPage extends StatelessWidget {
                     'totalTrips': 1250,
                     'carModel': 'Toyota Camry',
                     'carNumber': 'ABC-123',
-                    'estimatedArrival': '5 min',
                   },
                 },
               );

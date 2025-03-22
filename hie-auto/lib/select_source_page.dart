@@ -135,19 +135,27 @@ class _SelectSourcePageState extends State<SelectSourcePage> {
       );
 
       if (locationDetails != null && locationDetails['address'] != null) {
-        setState(() {
-          _selectedAddress = locationDetails['address'];
-        });
+        if (mounted) {
+          setState(() {
+            _selectedAddress = locationDetails['address'];
+          });
+        }
       }
 
-      mapController.move(_currentLocation!, 15);
+      if (mounted) {
+        mapController.move(_currentLocation!, 15);
+      }
     } catch (e) {
       logger.e('Error getting location: $e');
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Error getting current location')),
-      );
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Error getting current location')),
+        );
+      }
     } finally {
-      setState(() => _isLoading = false);
+      if (mounted) {
+        setState(() => _isLoading = false);
+      }
     }
   }
 

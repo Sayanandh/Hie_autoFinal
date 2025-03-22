@@ -25,7 +25,8 @@ android {
         versionCode flutter.versionCode
         versionName flutter.versionName
         manifestPlaceholders = [
-            'MAPBOX_ACCESS_TOKEN': "pk.eyJ1IjoidmFydW5tZW5vbiIsImEiOiJjbTM3MjNmZWMwNGJlMm1xdXg1OTk1NHlnIn0.5yLCFGI6Mr3tMzcjJZgYlg"
+            'MAPBOX_ACCESS_TOKEN': "pk.eyJ1IjoidmFydW5tZW5vbiIsImEiOiJjbTM3MjNmZWMwNGJlMm1xdXg1OTk1NHlnIn0.5yLCFGI6Mr3tMzcjJZgYlg",
+            'applicationName': "io.flutter.app.FlutterApplication"
         ]
     }
     

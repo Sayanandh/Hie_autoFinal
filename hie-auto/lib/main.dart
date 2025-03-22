@@ -16,6 +16,8 @@ import 'search_and_select_page.dart';
 import 'ride_details_page.dart';
 import 'driver_selection_page.dart';
 import 'utils/ui_utils.dart';
+import 'payment_page.dart';
+import 'welcome_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -80,22 +82,9 @@ class MyApp extends StatelessWidget {
             ),
             themeMode:
                 themeProvider.isDarkMode ? ThemeMode.dark : ThemeMode.light,
-            home: Consumer<AuthProvider>(
-              builder: (context, authProvider, child) {
-                if (authProvider.isFirstTime) {
-                  return const IntroductionPage();
-                }
-                if (!authProvider.isAuthenticated) {
-                  return LoginPage(
-                    onThemeToggle: () => themeProvider.toggleTheme(),
-                  );
-                }
-                return HomePage(
-                  onThemeToggle: () => themeProvider.toggleTheme(),
-                );
-              },
-            ),
+            initialRoute: '/welcome',
             routes: {
+              '/welcome': (context) => const WelcomePage(),
               '/login': (context) => LoginPage(
                     onThemeToggle: () => themeProvider.toggleTheme(),
                   ),
@@ -114,6 +103,10 @@ class MyApp extends StatelessWidget {
               '/search-select': (context) => const SearchAndSelectPage(),
               '/ride-details': (context) => const RideDetailsPage(),
               '/driver-selection': (context) => const DriverSelectionPage(),
+              '/payment': (context) => PaymentPage(
+                    paymentData: ModalRoute.of(context)!.settings.arguments
+                        as Map<String, dynamic>,
+                  ),
             },
           ),
           themeProvider.isDarkMode,
