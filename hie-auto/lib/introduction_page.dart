@@ -20,7 +20,7 @@ class IntroductionPage extends StatelessWidget {
               Hero(
                 tag: 'app_logo',
                 child: Icon(
-                  Icons.directions_car_rounded,
+                  Icons.electric_rickshaw,
                   size: 120,
                   color: Theme.of(context).colorScheme.primary,
                 ),

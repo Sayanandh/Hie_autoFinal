@@ -77,14 +77,14 @@ class RideDetailsPage extends StatelessWidget {
                     context,
                     title: 'Pickup Location',
                     address: source,
-                    icon: Icons.location_on,
+                    icon: Icons.electric_rickshaw,
                   ),
                   const SizedBox(height: 24),
                   _buildLocationCard(
                     context,
                     title: 'Dropoff Location',
                     address: destination,
-                    icon: Icons.location_on,
+                    icon: Icons.electric_rickshaw,
                   ),
                   const SizedBox(height: 32),
                   _buildInfoCard(

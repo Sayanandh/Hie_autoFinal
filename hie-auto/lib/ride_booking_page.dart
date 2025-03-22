@@ -30,7 +30,7 @@ class _RideBookingPageState extends State<RideBookingPage> {
     },
     {
       'type': 'Car',
-      'icon': Icons.directions_car,
+      'icon': Icons.electric_rickshaw,
       'price': 250,
       'time': '15 min',
       'color': Colors.black,
@@ -38,7 +38,7 @@ class _RideBookingPageState extends State<RideBookingPage> {
     },
     {
       'type': 'Premium',
-      'icon': Icons.local_taxi,
+      'icon': Icons.electric_rickshaw,
       'price': 350,
       'time': '15 min',
       'color': Colors.deepPurple,
@@ -56,10 +56,11 @@ class _RideBookingPageState extends State<RideBookingPage> {
 
   void _fitBounds() {
     if (widget.bookingData.isEmpty) return;
-    
+
     final pickup = widget.bookingData['pickup']?['location'] as LatLng?;
-    final destination = widget.bookingData['destination']?['location'] as LatLng?;
-    
+    final destination =
+        widget.bookingData['destination']?['location'] as LatLng?;
+
     if (pickup == null || destination == null) return;
 
     final bounds = LatLngBounds.fromPoints([pickup, destination]);
@@ -73,19 +74,21 @@ class _RideBookingPageState extends State<RideBookingPage> {
 
   List<LatLng> _getRoutePoints() {
     if (widget.bookingData.isEmpty) return [];
-    
+
     final pickup = widget.bookingData['pickup']?['location'] as LatLng?;
-    final destination = widget.bookingData['destination']?['location'] as LatLng?;
-    
+    final destination =
+        widget.bookingData['destination']?['location'] as LatLng?;
+
     if (pickup == null || destination == null) return [];
 
     if (widget.bookingData['route']?['geometry']?['coordinates'] != null) {
-      final coordinates = widget.bookingData['route']['geometry']['coordinates'] as List;
+      final coordinates =
+          widget.bookingData['route']['geometry']['coordinates'] as List;
       return coordinates
           .map((coord) => LatLng(coord[1] as double, coord[0] as double))
           .toList();
     }
-    
+
     return [pickup, destination];
   }
 
@@ -108,7 +111,8 @@ class _RideBookingPageState extends State<RideBookingPage> {
       );
     }
 
-    final destination = widget.bookingData['destination']?['location'] as LatLng?;
+    final destination =
+        widget.bookingData['destination']?['location'] as LatLng?;
     if (destination == null) {
       return const Scaffold(
         body: Center(
@@ -132,7 +136,8 @@ class _RideBookingPageState extends State<RideBookingPage> {
             ),
             children: [
               TileLayer(
-                urlTemplate: 'https://api.mapbox.com/styles/v1/${Secrets.mapboxStyleId}/tiles/256/{z}/{x}/{y}@2x?access_token=${Secrets.mapboxAccessToken}',
+                urlTemplate:
+                    'https://api.mapbox.com/styles/v1/${Secrets.mapboxStyleId}/tiles/256/{z}/{x}/{y}@2x?access_token=${Secrets.mapboxAccessToken}',
                 additionalOptions: const {
                   'accessToken': Secrets.mapboxAccessToken,
                   'id': 'mapbox.mapbox-streets-v8',
@@ -222,7 +227,8 @@ class _RideBookingPageState extends State<RideBookingPage> {
               return Container(
                 decoration: BoxDecoration(
                   color: Colors.white,
-                  borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+                  borderRadius:
+                      const BorderRadius.vertical(top: Radius.circular(20)),
                   boxShadow: [
                     BoxShadow(
                       color: Colors.black.withAlpha(20),
@@ -328,8 +334,8 @@ class _RideBookingPageState extends State<RideBookingPage> {
                           );
                         },
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: _vehicleTypes
-                              .firstWhere((v) => v['type'] == _selectedVehicleType)['color'],
+                          backgroundColor: _vehicleTypes.firstWhere((v) =>
+                              v['type'] == _selectedVehicleType)['color'],
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12),
                           ),
@@ -435,4 +441,4 @@ class _RideBookingPageState extends State<RideBookingPage> {
       ),
     );
   }
-} 
+}

@@ -126,8 +126,8 @@ class _SignupPageState extends State<SignupPage> {
                     child: Hero(
                       tag: 'app_logo',
                       child: Icon(
-                        Icons.directions_car_rounded,
-                        size: 80,
+                        Icons.electric_rickshaw,
+                        size: 120,
                         color: Theme.of(context).colorScheme.primary,
                       ).animate().fadeIn(duration: 600.ms).scale(delay: 200.ms),
                     ),
